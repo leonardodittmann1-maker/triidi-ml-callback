@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRIIDI | Autorização Mercado Livre</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .box {
+      width: min(520px, 88%);
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 30px;
+    }
+
+    .ok {
+      color: #3fb950;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .code {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 15px;
+      word-break: break-all;
+      margin: 15px 0;
+      font-family: monospace;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      border: 0;
+      border-radius: 8px;
+      background: #238636;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .error {
+      color: #f85149;
+    }
+
+    .small {
+      color: #8b949e;
+      font-size: 13px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>TRIIDI</h1>
+
+  <div id="content">
+    Processando autorização...
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  const state = params.get("state");
+  const error = params.get("error");
+
+  const content = document.getElementById("content");
+
+  if (code) {
+    content.innerHTML = `
+      <div class="ok">✓ Mercado Livre autorizado</div>
+      <p>Copie o código abaixo e volte ao Integrador TRIIDI:</p>
+
+      <div class="code" id="authCode"></div>
+
+      <button onclick="copyCode()">Copiar código</button>
+
+      <div class="small">
+        Este código é temporário e será utilizado apenas para concluir a conexão.
+      </div>
+    `;
+
+    document.getElementById("authCode").textContent = code;
+
+  } else if (error) {
+    content.innerHTML = `
+      <div class="error">Não foi possível concluir a autorização.</div>
+      <p>${error}</p>
+    `;
+  } else {
+    content.innerHTML = `
+      <div class="error">Nenhum código de autorização foi recebido.</div>
+    `;
+  }
+
+  function copyCode() {
+    navigator.clipboard.writeText(code);
+  }
+</script>
+
+</body>
+</html>
