@@ -1,0 +1,12 @@
+name = "viraliza-shopee-api"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+# Configure no Cloudflare Dashboard ou na linha de comando:
+#   npx wrangler secret put SHOPEE_APP_ID
+#   npx wrangler secret put SHOPEE_APP_SECRET
+#   npx wrangler secret put APP_ACCESS_TOKEN
+# A origem pública do app não é segredo, mas precisa corresponder exatamente à origem do navegador.
+[vars]
+ALLOWED_ORIGIN = "https://leonardodittmann1-maker.github.io"
