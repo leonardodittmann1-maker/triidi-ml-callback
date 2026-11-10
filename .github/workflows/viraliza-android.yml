@@ -1,0 +1,66 @@
+name: Viraliza Studio - compilar APK Android
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'viraliza-android/**'
+      - '.github/workflows/viraliza-android.yml'
+permissions:
+  contents: write
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obter código
+        uses: actions/checkout@v4
+      - name: Preparar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Preparar Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Instalar Android API 35
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Preparar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Preparar assinatura privada do usuário
+        env:
+          VIRALIZA_ANDROID_SIGNING_JSON: ${{ secrets.VIRALIZA_ANDROID_SIGNING_JSON }}
+        run: python3 viraliza-android/scripts/configure_signing.py
+      - name: Compilar APK release
+        run: gradle -p viraliza-android :app:assembleRelease --no-daemon
+      - name: Confirmar assinatura do APK
+        if: env.VIRALIZA_IS_SIGNED == 'true'
+        run: |
+          apk='viraliza-android/app/build/outputs/apk/release/app-release.apk'
+          test -s "$apk"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$apk"
+          mkdir -p dist
+          cp "$apk" dist/Viraliza_Studio_Android.apk
+      - name: Disponibilizar APK assinado para baixar
+        if: env.VIRALIZA_IS_SIGNED == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Viraliza-Studio-Android-APK
+          path: dist/Viraliza_Studio_Android.apk
+          retention-days: 30
+      - name: Criar release oficial do APK
+        if: github.event_name == 'workflow_dispatch' && env.VIRALIZA_IS_SIGNED == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(grep -oE "versionName '[^']+'" viraliza-android/app/build.gradle | head -n1 | cut -d\' -f2)
+          tag="viraliza-android-v${version}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag já existe. Para novas versões, aumente versionCode e versionName."
+            exit 1
+          fi
+          gh release create "$tag" dist/Viraliza_Studio_Android.apk \
+            --title "Viraliza Studio Android $version" \
+            --notes "APK do Viraliza Studio. Atualiza a instalação anterior somente se a assinatura e o identificador forem os mesmos."
+      - name: Avisar que a assinatura ainda não está configurada
+        if: env.VIRALIZA_IS_SIGNED != 'true'
+        run: echo 'O projeto compilou, mas o APK não foi distribuído. Cadastre o secret VIRALIZA_ANDROID_SIGNING_JSON para criar um APK instalável e atualizável.'

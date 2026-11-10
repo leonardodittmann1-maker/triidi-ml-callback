@@ -1,0 +1,16 @@
+name = "viraliza-automation"
+main = "src.js"
+compatibility_date = "2026-11-09"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGIN = "https://leonardodittmann1-maker.github.io"
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "viraliza-automation"
+database_id = "COLE_O_DATABASE_ID_AQUI"
+migrations_dir = "migrations"

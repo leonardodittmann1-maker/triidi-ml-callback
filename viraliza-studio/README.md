@@ -1,3 +1,9 @@
+# Viraliza Studio 2.0 — atualização da automação
+
+Abra `automacao.html` ou o atalho **Piloto automático** no aplicativo. Consulte `LEIA_PRIMEIRO_2.0.md` e `automation-worker/README.md` antes de conectar as redes.
+
+---
+
 # Viraliza Studio v1.1 — plataforma de apoio a afiliados
 
 Aplicação web responsiva e instalável como PWA. Desenvolvida em HTML, CSS e JavaScript. **Sem necessidade de pagar mensalidade para executar o código.**

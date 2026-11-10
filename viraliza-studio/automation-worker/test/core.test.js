@@ -1,0 +1,9 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {generateText,brDay,validHttps} from '../src.js';
+test('links must be absolute HTTPS',()=>{assert.equal(validHttps('javascript:alert(1)'),'');assert.equal(validHttps('http://shop.test/a'),'');assert.equal(validHttps('https://shop.test/item'),'https://shop.test/item');});
+test('copy includes disclosure and does not assert unverified sales',()=>{const v=generateText({name:'Luminária LED',price:44.9,oldPrice:79.9,affiliateUrl:'https://shop.test/a'},'telegram');assert.match(v,/Publicidade/);assert.match(v,/confira na loja/);assert.doesNotMatch(v,/mais vendido|garantido|últimas unidades/i)});
+test('Sao Paulo dates',()=>{assert.equal(brDay(new Date('2026-11-09T04:00:00Z')),'2026-11-09');assert.equal(brDay(new Date('2026-11-09T02:00:00Z')),'2026-11-08')});
+import worker from '../src.js';
+test('no dashboard key: access denied; no social calls',async()=>{const req=new Request('https://example.com/api/automation/status');const r=await worker.fetch(req,{ALLOWED_ORIGIN:'https://leonardodittmann1-maker.github.io',DASHBOARD_TOKEN:'abcdefghijklmnopqrstuvwxyz1234567890',DB:{}});assert.equal(r.status,401)});
+test('unapproved pending queue stays paused',async()=>{let queryCalls=[];const env={DB:{prepare(sql){queryCalls.push(sql);return{first:async()=>({paused:1})}}}};const x=await (await import('../src.js')).processDue(env);assert.deepEqual(x,{paused:true,processed:0});assert.equal(queryCalls.length,1)});
+test('CORS blocks origin that was not authorized',async()=>{const req=new Request('https://example.com/api/automation/status',{headers:{Origin:'https://malicioso.example',Authorization:'Bearer abc'}});const r=await worker.fetch(req,{ALLOWED_ORIGIN:'https://leonardodittmann1-maker.github.io',DASHBOARD_TOKEN:'abc'});assert.equal(r.status,403)});

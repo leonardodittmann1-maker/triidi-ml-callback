@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "webVersion": "2.1.0",
+  "releasedAt": "2026-11-10",
+  "notes": "Piloto automático 2.0 e atualização de conteúdo pelo APK/PWA.",
+  "apk": {"versionCode": 1, "versionName": "1.0.0", "downloadUrl": null}
+}

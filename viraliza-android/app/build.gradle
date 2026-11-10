@@ -1,0 +1,55 @@
+plugins {
+    id 'com.android.application'
+}
+
+def signingFilePath = System.getenv('VIRALIZA_SIGNING_FILE')
+def signingProps = new Properties()
+if (signingFilePath && file(signingFilePath).isFile()) {
+    file(signingFilePath).withInputStream { signingProps.load(it) }
+}
+
+android {
+    namespace 'br.com.viralizastudio.mobile'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'br.com.viralizastudio.mobile'
+        minSdk 29
+        targetSdk 35
+        versionCode 1
+        versionName '1.0.0'
+    }
+    signingConfigs {
+        if (!signingProps.isEmpty()) {
+            release {
+                storeFile file(signingProps.getProperty('storeFile'))
+                storePassword signingProps.getProperty('storePassword')
+                keyAlias signingProps.getProperty('keyAlias')
+                keyPassword signingProps.getProperty('keyPassword')
+                enableV1Signing true
+                enableV2Signing true
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (!signingProps.isEmpty()) {
+                signingConfig signingConfigs.release
+            }
+        }
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-dev'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        buildConfig true
+    }
+    lint {
+        abortOnError true
+    }
+}
