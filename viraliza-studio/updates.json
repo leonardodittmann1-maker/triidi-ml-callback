@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "webVersion": "2.1.0",
-  "releasedAt": "2026-11-10",
-  "notes": "Piloto automático 2.0 e atualização de conteúdo pelo APK/PWA.",
+  "webVersion": "2.2.0",
+  "releasedAt": "2026-11-12",
+  "notes": "Novo TikTok Auto Creator: produtos, modelos virtuais, geração MP4 via FASHN e fila de aprovação. Integração TikTok Shop com carrinho ainda depende de autorização.",
   "apk": {"versionCode": 1, "versionName": "1.0.0", "downloadUrl": null}
 }
