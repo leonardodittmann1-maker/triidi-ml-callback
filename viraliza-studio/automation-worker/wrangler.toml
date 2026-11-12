@@ -14,3 +14,8 @@ binding = "DB"
 database_name = "viraliza-automation"
 database_id = "COLE_O_DATABASE_ID_AQUI"
 migrations_dir = "migrations"
+
+# Opcional: npx wrangler r2 bucket create viraliza-creator-media
+# [[r2_buckets]]
+# binding = "CREATOR_MEDIA"
+# bucket_name = "viraliza-creator-media"
