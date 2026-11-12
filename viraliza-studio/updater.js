@@ -4,7 +4,7 @@
  */
 (()=>{
  'use strict';
- const CURRENT_WEB='2.1.0';
+ const CURRENT_WEB='2.2.0';
  const FEED='./updates.json';
  const RELEASE_PREFIX='https://github.com/leonardodittmann1-maker/triidi-ml-callback/releases/download/';
  const compare=(a,b)=>{
