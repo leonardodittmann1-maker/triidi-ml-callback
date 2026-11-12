@@ -2,6 +2,7 @@
  * No browser-side platform credentials; all dispatch is explicit opt-in and approved.
  * Telegram channels/groups require administrator permissions; no unsolicited direct messaging.
  */
+import {creatorRoute,creatorTick} from './creator.js';
 const CORS_HEADERS = 'authorization,content-type';
 const MAX_JOBS_PER_DESTINATION_PER_DAY = 2;
 const MIN_INTERVAL_MS = 3 * 3600 * 1000;
@@ -132,6 +133,7 @@ async function route(request,env){
  if(!auth(request,env))return response({error:'Acesso negado'},401,headers);
  if(!env.DB)return response({error:'Banco D1 não configurado'},503,headers);
  const url=new URL(request.url),path=url.pathname,method=request.method;
+ if(path.startsWith('/api/creator/'))return creatorRoute(request,env,headers);
  try{
   if(method==='GET'&&path==='/api/automation/status'){
    const setting=await env.DB.prepare('SELECT paused FROM settings WHERE id=1').first();
@@ -228,6 +230,6 @@ async function route(request,env){
 }
 export default {
  async fetch(request,env){return route(request,env);},
- async scheduled(event,env,ctx){ctx.waitUntil(processDue(env));}
+ async scheduled(event,env,ctx){ctx.waitUntil(Promise.allSettled([processDue(env),creatorTick(env)]));}
 };
 export {generateText,brDay,validHttps,processDue};
